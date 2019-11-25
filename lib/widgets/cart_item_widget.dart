@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:provider/provider.dart';
+
 import '../providers/products_provider.dart';
 import '../models/cart.dart';
 import '../models/product.dart';
