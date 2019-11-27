@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:shop_app/providers/auth_provider.dart';
 
 import '../models/product.dart';
 import '../providers/products_provider.dart';
 
 class EditUserProduct extends StatefulWidget {
   static String namedRoute = '/EditUserProductsScreen';
+  // final String userID;
   EditUserProduct({Key key}) : super(key: key);
 
   @override
@@ -18,6 +20,7 @@ class _EditUserProductState extends State<EditUserProduct> {
   FocusNode _imageUrlFocusNode = FocusNode();
   TextEditingController _imageUrlController = TextEditingController();
   GlobalKey<FormState> _productFormKey = GlobalKey<FormState>();
+  String _userID;
   String _productID;
   String _productTitle = '';
   double _productPrice = 0.0;
@@ -36,6 +39,7 @@ class _EditUserProductState extends State<EditUserProduct> {
   @override
   void didChangeDependencies() {
     if (!_isInit) {
+      _userID = Provider.of<AuthProvider>(context, listen: false).userID;
       _productID = ModalRoute.of(context).settings.arguments as String;
       if (_productID != 'new') {
         _isNew = false;
@@ -84,6 +88,7 @@ class _EditUserProductState extends State<EditUserProduct> {
         description: _productDescription,
         price: _productPrice,
         imageUrl: _productURL,
+        ownerID: _userID,
       ))
           .catchError((error) {
         return showDialog(
@@ -118,6 +123,7 @@ class _EditUserProductState extends State<EditUserProduct> {
             description: _productDescription,
             price: _productPrice,
             imageUrl: _productURL,
+            ownerID: _userID,
           ));
       Navigator.of(context).pop();
     }

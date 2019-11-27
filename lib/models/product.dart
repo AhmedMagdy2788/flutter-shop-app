@@ -10,6 +10,7 @@ class Product with ChangeNotifier {
   final String description;
   final double price;
   final String imageUrl;
+  final String ownerID;
   bool favourite;
 
   Product({
@@ -18,6 +19,7 @@ class Product with ChangeNotifier {
     @required this.description,
     @required this.price,
     @required this.imageUrl,
+    @required this.ownerID,
     this.favourite = false,
   });
 
@@ -27,20 +29,21 @@ class Product with ChangeNotifier {
       'price': price,
       'description': description,
       'imageUrl': imageUrl,
-      'favourite': favourite,
+      'ownerID': ownerID,
     });
   }
 
-  Future<void> toggleFavorite() async {
+  Future<void> toggleFavorite(String userID, String token) async {
     this.favourite = !this.favourite;
     notifyListeners();
-    var respoce = await http.patch(
-        'https://flutter-shop-app-31c34.firebaseio.com/products/${this.id}.json',
-        body: convert.json.encode({
-          'favourite': this.favourite,
-        }));
-    if (respoce.statusCode >= 400) {
+    var response = await http.put(
+        'https://flutter-shop-app-31c34.firebaseio.com/$userID/${this.id}.json?auth=$token',
+        body: convert.json.encode(
+          this.favourite,
+        ));
+    if (response.statusCode >= 400) {
       this.favourite = !this.favourite;
+      print(response.body);
       notifyListeners();
     } else {
       // notifyListeners();

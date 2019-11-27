@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:shop_app/providers/auth_provider.dart';
 
 import '../models/cart.dart';
 import '../models/product.dart';
@@ -10,6 +11,7 @@ class ProductItemWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Product _product = Provider.of<Product>(context, listen: false);
+    AuthProvider _auther = Provider.of<AuthProvider>(context, listen: false);
     Cart _cart = Provider.of<Cart>(context, listen: false);
     return LayoutBuilder(
       builder: (ctx, constrains) {
@@ -50,7 +52,7 @@ class ProductItemWidget extends StatelessWidget {
                           color: Theme.of(context).accentColor,
                         ),
                         onPressed: () {
-                          product.toggleFavorite();
+                          product.toggleFavorite(_auther.userID, _auther.token);
                         },
                         color: Colors.white,
                       ),

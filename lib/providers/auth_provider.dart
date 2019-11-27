@@ -29,6 +29,10 @@ class AuthProvider with ChangeNotifier {
     return null;
   }
 
+  String get userID{
+    return isAuthenticated? _localID: null;
+  }
+
   Future<void> _authenticate(String email, String password, String url) async {
     try{
       var response = await http.post(url,

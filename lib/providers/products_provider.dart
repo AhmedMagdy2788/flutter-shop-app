@@ -8,8 +8,9 @@ import '../models/product.dart';
 
 class ProductsProvider with ChangeNotifier {
   final String token;
-  bool isDataFetched; 
-  ProductsProvider(this.token, this.isDataFetched);
+  final String userID;
+  bool isDataFetched;
+  ProductsProvider(this.token, this.userID, this.isDataFetched);
   List<Product> _items = [
     // Product(
     //   id: 'p1',
@@ -58,24 +59,34 @@ class ProductsProvider with ChangeNotifier {
   Future<void> fetchingData() async {
     print('Fitching data from server');
     // try {
-    var response = await http
-        .get('https://flutter-shop-app-31c34.firebaseio.com/products.json?auth=$token');
+    var response = await http.get(
+        'https://flutter-shop-app-31c34.firebaseio.com/products.json?auth=$token');
     // try {
-    var fitchedData =
+    var fitchedProductsData =
         convert.json.decode(response.body) as Map<String, dynamic>;
+        print('Data Fitched Succefully');
+    // try {
+      print(userID);
+    response = await http.get(
+        'https://flutter-shop-app-31c34.firebaseio.com/$userID.json?auth=$token');
+    // try {
+    var favouriteProductsData =
+        convert.json.decode(response.body) as Map<String, bool>;
     print('Data Fitched Succefully');
-    fitchedData.forEach((prodID, prodData) {
+    fitchedProductsData.forEach((prodID, prodData) {
       if (!_items.any((prod) {
         if (prodID == prod.id) return true;
         return false;
       }))
         _items.add(Product(
-            id: prodID,
-            title: prodData['title'],
-            description: prodData['description'],
-            price: prodData['price'],
-            imageUrl: prodData['imageUrl'],
-            favourite: prodData['favourite']));
+          id: prodID,
+          title: prodData['title'],
+          description: prodData['description'],
+          price: prodData['price'],
+          imageUrl: prodData['imageUrl'],
+          favourite: (favouriteProductsData == null)? false : favouriteProductsData[prodID] ?? false,
+          ownerID: prodData['ownerID'],
+        ));
     });
     // print(fitchedData.toString());
     notifyListeners();
@@ -89,7 +100,8 @@ class ProductsProvider with ChangeNotifier {
 
   Future<void> addProduct(Product product) {
     return http
-        .post('https://flutter-shop-app-31c34.firebaseio.com/products.json?auth=$token',
+        .post(
+            'https://flutter-shop-app-31c34.firebaseio.com/products.json?auth=$token',
             body: product.toJSON())
         .then((responce) {
       _items.add(Product(
@@ -98,6 +110,7 @@ class ProductsProvider with ChangeNotifier {
         description: product.description,
         price: product.price,
         imageUrl: product.imageUrl,
+        ownerID: product.ownerID,
       ));
       notifyListeners();
     }).catchError((error) {
@@ -123,6 +136,7 @@ class ProductsProvider with ChangeNotifier {
         price: product.price,
         imageUrl: product.imageUrl,
         description: product.description,
+        ownerID: product.ownerID,
       );
       notifyListeners();
     } catch (onError) {
