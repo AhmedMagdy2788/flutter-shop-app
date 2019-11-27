@@ -68,10 +68,10 @@ class ProductsProvider with ChangeNotifier {
     // try {
       print(userID);
     response = await http.get(
-        'https://flutter-shop-app-31c34.firebaseio.com/$userID.json?auth=$token');
+        'https://flutter-shop-app-31c34.firebaseio.com/userFavouritesProducts/$userID.json?auth=$token');
     // try {
     var favouriteProductsData =
-        convert.json.decode(response.body) as Map<String, bool>;
+        convert.json.decode(response.body);
     print('Data Fitched Succefully');
     fitchedProductsData.forEach((prodID, prodData) {
       if (!_items.any((prod) {

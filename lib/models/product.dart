@@ -37,7 +37,7 @@ class Product with ChangeNotifier {
     this.favourite = !this.favourite;
     notifyListeners();
     var response = await http.put(
-        'https://flutter-shop-app-31c34.firebaseio.com/$userID/${this.id}.json?auth=$token',
+        'https://flutter-shop-app-31c34.firebaseio.com/userFavouritesProducts/$userID/${this.id}.json?auth=$token',
         body: convert.json.encode(
           this.favourite,
         ));
