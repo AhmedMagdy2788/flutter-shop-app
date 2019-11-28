@@ -7,7 +7,8 @@ import '../models/order.dart';
 
 class Orders with ChangeNotifier {
   final String token;
-  Orders(this.token);
+  final String userID;
+  Orders(this.token, this.userID);
   List<OrderItem> _orders = [];
 
   List<OrderItem> get orders {
@@ -16,7 +17,7 @@ class Orders with ChangeNotifier {
 
   Future<void> fatchUserOrders() async {
     var response = await http
-        .get('https://flutter-shop-app-31c34.firebaseio.com/orders.json?auth=$token');
+        .get('https://flutter-shop-app-31c34.firebaseio.com/orders/$userID.json?auth=$token');
         // print(convert.jsonDecode(response.body));
     Map<String, dynamic> ordersData =
         convert.json.decode(response.body) as Map<String, dynamic>;
@@ -45,7 +46,7 @@ class Orders with ChangeNotifier {
   Future<void> addOrder(List<CartItem> cartProducts, double total) async {
     var date = DateTime.now().toIso8601String();
     var response = await http.post(
-        'https://flutter-shop-app-31c34.firebaseio.com/orders.json?auth=$token',
+        'https://flutter-shop-app-31c34.firebaseio.com/orders/$userID.json?auth=$token',
         body: convert.json.encode({
           'amount': total,
           'dateTime': date,
