@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:shop_app/providers/auth_provider.dart';
 
+import 'providers/auth_provider.dart';
+import 'screens/splash-screen.dart';
 import 'providers/orders_provider.dart';
 import 'providers/products_provider.dart';
 import 'screens/cart_screen.dart';
@@ -26,13 +27,15 @@ class MyApp extends StatelessWidget {
           value: AuthProvider(),
         ),
         ChangeNotifierProxyProvider<AuthProvider, ProductsProvider>(
-          builder:(ctx, authProvider, previousProduct)=> ProductsProvider(authProvider.token, authProvider.userID, false),
+          builder: (ctx, authProvider, previousProduct) =>
+              ProductsProvider(authProvider.token, authProvider.userID, false),
         ),
         ChangeNotifierProxyProvider<AuthProvider, Cart>(
-          builder:(ctx, auth, previousCart)=> Cart(auth.token),
+          builder: (ctx, auth, previousCart) => Cart(auth.token),
         ),
         ChangeNotifierProxyProvider<AuthProvider, Orders>(
-          builder: (ctx, auth, previousOrders)=>Orders(auth.token, auth.userID),
+          builder: (ctx, auth, previousOrders) =>
+              Orders(auth.token, auth.userID),
         )
       ],
       child: Consumer<AuthProvider>(
@@ -44,7 +47,16 @@ class MyApp extends StatelessWidget {
                 accentColor: Colors.deepOrange,
                 fontFamily: 'Lato',
               ),
-              home: (authProvider.isAuthenticated)? ProductsOverview() : AuthScreen(),
+              home: authProvider.isAuthenticated
+                  ? ProductsOverview()
+                  : FutureBuilder(
+                      future: authProvider.tryAutoLogin(),
+                      builder: (ctx, boolFutureSnapshot) {
+                        return (boolFutureSnapshot.connectionState == ConnectionState.waiting)
+                        ? SplashScreen()
+                        : AuthScreen();
+                      },
+                    ),
               routes: {
                 AuthScreen.routeName: (ctx) => AuthScreen(),
                 ProductsOverview.routeName: (ctx) => ProductsOverview(),
