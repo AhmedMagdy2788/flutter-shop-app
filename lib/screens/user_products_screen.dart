@@ -21,7 +21,7 @@ class _UserProductsScreenState extends State<UserProductsScreen> {
   void initState() {
     Future.delayed(Duration.zero, () async {
       productsData = Provider.of<ProductsProvider>(context);
-      await productsData.fetchingData();
+      await productsData.fetchUserCreatedProduct();
       setState(() {
         isLoading = false;
         isInit = true;
@@ -55,7 +55,7 @@ class _UserProductsScreenState extends State<UserProductsScreen> {
                 setState(() {
                   isLoading = true;
                 });
-                await Provider.of<ProductsProvider>(context).fetchingData();
+                await Provider.of<ProductsProvider>(context).fetchUserCreatedProduct();
                 setState(() {
                   isLoading = false;
                 });
@@ -65,13 +65,13 @@ class _UserProductsScreenState extends State<UserProductsScreen> {
                 child: Padding(
                   padding: EdgeInsets.all(8),
                   child: ListView.builder(
-                    itemCount: productsData.items.length,
+                    itemCount: productsData.userProduct.length,
                     itemBuilder: (_, i) => Column(
                       children: [
                         UserProductItem(
-                          productsData.items[i].id,
-                          productsData.items[i].title,
-                          productsData.items[i].imageUrl,
+                          productsData.userProduct[i].id,
+                          productsData.userProduct[i].title,
+                          productsData.userProduct[i].imageUrl,
                         ),
                         Divider(),
                       ],

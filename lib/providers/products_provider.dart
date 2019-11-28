@@ -45,10 +45,16 @@ class ProductsProvider with ChangeNotifier {
     //       'https://upload.wikimedia.org/wikipedia/commons/thumb/1/14/Cast-Iron-Pan.jpg/1024px-Cast-Iron-Pan.jpg',
     // ),
   ];
+  List<Product> _userProduct = [];
 
   List<Product> get items {
     return [..._items];
   }
+
+  List<Product> get userProduct {
+    return [..._userProduct];
+  }
+
 
   List<Product> get favouritesItems {
     return _items.where((productItem) {
@@ -56,38 +62,66 @@ class ProductsProvider with ChangeNotifier {
     }).toList();
   }
 
-  Future<void> fetchingData() async {
+  Future<void> fetchUserCreatedProduct() async {
+    print('fetching user created product');
+    var response = await http.get(
+        'https://flutter-shop-app-31c34.firebaseio.com/products.json?auth=$token&orderBy="ownerID"&equalTo="$userID"');
+    var responseData =
+        convert.jsonDecode(response.body) as Map<String, dynamic>;
+        
+    List<Product> recvedProductList = [];
+    responseData.forEach((prodID, prodData) {
+      recvedProductList.add(Product(
+        id: prodID,
+        title: prodData['title'],
+        description: prodData['description'],
+        price: prodData['price'],
+        imageUrl: prodData['imageUrl'],
+        ownerID: prodData['ownerID'],
+      ));
+    });
+    print('num of products = ${recvedProductList.length}');
+    _userProduct = recvedProductList;
+    notifyListeners();
+  }
+
+  Future<void> fetchingData([bool filtered = false]) async {
     print('Fitching data from server');
     // try {
+    String filteredExtention =
+        filtered ? '&orderBy="ownerID"&equelTo="$userID"' : '';
     var response = await http.get(
-        'https://flutter-shop-app-31c34.firebaseio.com/products.json?auth=$token');
+        'https://flutter-shop-app-31c34.firebaseio.com/products.json?auth=$token$filteredExtention');
     // try {
     var fitchedProductsData =
         convert.json.decode(response.body) as Map<String, dynamic>;
-        print('Data Fitched Succefully');
+    print('Data Fitched Succefully');
     // try {
-      print(userID);
+    print(userID);
     response = await http.get(
         'https://flutter-shop-app-31c34.firebaseio.com/userFavouritesProducts/$userID.json?auth=$token');
     // try {
-    var favouriteProductsData =
-        convert.json.decode(response.body);
+    var favouriteProductsData = convert.json.decode(response.body);
     print('Data Fitched Succefully');
+    List<Product> recvedProductList = [];
     fitchedProductsData.forEach((prodID, prodData) {
-      if (!_items.any((prod) {
-        if (prodID == prod.id) return true;
-        return false;
-      }))
-        _items.add(Product(
-          id: prodID,
-          title: prodData['title'],
-          description: prodData['description'],
-          price: prodData['price'],
-          imageUrl: prodData['imageUrl'],
-          favourite: (favouriteProductsData == null)? false : favouriteProductsData[prodID] ?? false,
-          ownerID: prodData['ownerID'],
-        ));
+      // if (!_items.any((prod) {
+      //   if (prodID == prod.id) return true;
+      //   return false;
+      // }))
+      recvedProductList.add(Product(
+        id: prodID,
+        title: prodData['title'],
+        description: prodData['description'],
+        price: prodData['price'],
+        imageUrl: prodData['imageUrl'],
+        favourite: (favouriteProductsData == null)
+            ? false
+            : favouriteProductsData[prodID] ?? false,
+        ownerID: prodData['ownerID'],
+      ));
     });
+    _items = recvedProductList;
     // print(fitchedData.toString());
     notifyListeners();
     // } catch (error) {

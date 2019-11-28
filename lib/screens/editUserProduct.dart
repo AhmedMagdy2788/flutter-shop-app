@@ -44,7 +44,7 @@ class _EditUserProductState extends State<EditUserProduct> {
       if (_productID != 'new') {
         _isNew = false;
         Product product =
-            Provider.of<ProductsProvider>(context).items.firstWhere((prod) {
+            Provider.of<ProductsProvider>(context).userProduct.firstWhere((prod) {
           if (prod.id == _productID) return true;
           return false;
         });
