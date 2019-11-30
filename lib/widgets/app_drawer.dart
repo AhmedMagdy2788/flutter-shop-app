@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:shop_app/screens/auth-screen.dart';
 
 import '../screens/order_screen.dart';
 import '../screens/user_products_screen.dart';
@@ -47,7 +48,8 @@ class AppDrawer extends StatelessWidget {
             title: Text('Log out'),
             onTap: () {
               Navigator.of(context).pop();
-              Provider.of<AuthProvider>(context, listen: false).logout();
+              Navigator.of(context).pushReplacementNamed(AuthScreen.routeName);
+              Provider.of<AuthProvider>(context).logout();
             },
           ),
         ],
