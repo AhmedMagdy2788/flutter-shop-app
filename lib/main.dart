@@ -41,31 +41,33 @@ class MyApp extends StatelessWidget {
       child: Consumer<AuthProvider>(
         builder: (ctx, authProvider, _) {
           return MaterialApp(
-              title: 'Shop App',
-              theme: ThemeData(
-                primarySwatch: Colors.purple,
-                accentColor: Colors.deepOrange,
-                fontFamily: 'Lato',
-              ),
-              home: authProvider.isAuthenticated
-                  ? ProductsOverview()
-                  : FutureBuilder(
-                      future: authProvider.tryAutoLogin(),
-                      builder: (ctx, boolFutureSnapshot) {
-                        return (boolFutureSnapshot.connectionState == ConnectionState.waiting)
-                        ? SplashScreen()
-                        : AuthScreen();
-                      },
-                    ),
-              routes: {
-                AuthScreen.routeName: (ctx) => AuthScreen(),
-                ProductsOverview.routeName: (ctx) => ProductsOverview(),
-                ProductDetailScreen.routeName: (ctx) => ProductDetailScreen(),
-                CartScreen.nameRout: (ctx) => CartScreen(),
-                OrdersScreen.namedRoot: (ctx) => OrdersScreen(),
-                UserProductsScreen.routeName: (ctx) => UserProductsScreen(),
-                EditUserProduct.namedRoute: (ctx) => EditUserProduct(),
-              });
+            title: 'Shop App',
+            theme: ThemeData(
+              primarySwatch: Colors.purple,
+              accentColor: Colors.deepOrange,
+              fontFamily: 'Lato',
+            ),
+            home: authProvider.isAuthenticated
+                ? ProductsOverview()
+                : FutureBuilder(
+                    future: authProvider.tryAutoLogin(),
+                    builder: (ctx, boolFutureSnapshot) {
+                      return (boolFutureSnapshot.connectionState ==
+                              ConnectionState.waiting)
+                          ? SplashScreen()
+                          : AuthScreen();
+                    },
+                  ),
+            routes: {
+              AuthScreen.routeName: (ctx) => AuthScreen(),
+              ProductsOverview.routeName: (ctx) => ProductsOverview(),
+              ProductDetailScreen.routeName: (ctx) => ProductDetailScreen(),
+              CartScreen.nameRout: (ctx) => CartScreen(),
+              OrdersScreen.namedRoot: (ctx) => OrdersScreen(),
+              UserProductsScreen.routeName: (ctx) => UserProductsScreen(),
+              EditUserProduct.namedRoute: (ctx) => EditUserProduct(),
+            },
+          );
         },
       ),
     );

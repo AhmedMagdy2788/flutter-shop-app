@@ -114,7 +114,8 @@ class AuthProvider with ChangeNotifier {
   Future<bool> tryAutoLogin() async {
     final prefs = await SharedPreferences.getInstance();
     if (!prefs.containsKey('UserData')) return false;
-    final userdata = jsonDecode(prefs.getString('UserData')) as Map<String, dynamic>;
+    final userdata =
+        jsonDecode(prefs.getString('UserData')) as Map<String, dynamic>;
     final storedExpireDate = DateTime.parse(userdata['expireDate']);
     if (storedExpireDate.isBefore(DateTime.now())) return false;
     _expireDate = storedExpireDate;
