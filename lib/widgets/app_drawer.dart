@@ -9,11 +9,12 @@ import '../providers/auth_provider.dart';
 class AppDrawer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    var authProvider = Provider.of<AuthProvider>(context);
     return Drawer(
       child: Column(
         children: <Widget>[
           AppBar(
-            title: Text('Hello Friend!'),
+            title: Text('${authProvider.email}'),
             automaticallyImplyLeading: false,
           ),
           Divider(),

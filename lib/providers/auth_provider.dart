@@ -37,6 +37,10 @@ class AuthProvider with ChangeNotifier {
     return isAuthenticated ? _localID : null;
   }
 
+  String get email{
+    return _email;
+  }
+
   Future<void> _authenticate(String email, String password, String url) async {
     try {
       var response = await http.post(url,
@@ -53,7 +57,7 @@ class AuthProvider with ChangeNotifier {
         DateTime responseDate = DateTime.now();
         _token = responseDecoded['idToken'];
         // print(idToken);
-        email = responseDecoded['email'];
+        _email = responseDecoded['email'];
         this._password = password;
         _refreshToken = responseDecoded['refreshToken'];
         // print(refreshToken);
@@ -70,6 +74,7 @@ class AuthProvider with ChangeNotifier {
         final jUserData = jsonEncode({
           'token': _token,
           'userID': _localID,
+          'email' : _email,
           'expireDate': _expireDate.toIso8601String()
         });
         final prefs = await SharedPreferences.getInstance();
@@ -121,6 +126,7 @@ class AuthProvider with ChangeNotifier {
     _expireDate = storedExpireDate;
     _token = userdata['token'];
     _localID = userdata['userID'];
+    _email = userdata['email'];
     _autoLogout();
     notifyListeners();
     return true;
