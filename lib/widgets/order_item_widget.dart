@@ -16,8 +16,26 @@ class OrderItemWidget extends StatefulWidget {
   _OrderItemState createState() => _OrderItemState();
 }
 
-class _OrderItemState extends State<OrderItemWidget> {
+class _OrderItemState extends State<OrderItemWidget>
+    with SingleTickerProviderStateMixin {
   var _expanded = false;
+  bool _isInit = false;
+  AnimationController _animeController;
+  Animation<double> _fadeAnimation;
+
+  @override
+  void didChangeDependencies() {
+    if (!_isInit) {
+      _animeController = AnimationController(
+        duration: Duration(milliseconds: 300),
+        vsync: this,
+      );
+      _fadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
+          CurvedAnimation(parent: _animeController, curve: Curves.easeIn));
+      _isInit = false;
+    }
+    super.didChangeDependencies();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -35,15 +53,22 @@ class _OrderItemState extends State<OrderItemWidget> {
               onPressed: () {
                 setState(() {
                   _expanded = !_expanded;
+                  if(_expanded) _animeController.forward();
+                  else _animeController.reverse();
                 });
               },
             ),
           ),
-          if (_expanded)
-            Container(
-              padding: EdgeInsets.symmetric(horizontal: 15, vertical: 4),
-              height: min(widget.order.products.length * 20.0 + 10, 100),
-              // height: 500,
+          // if (_expanded)
+          AnimatedContainer(
+            duration: Duration(milliseconds: 300),
+            padding: EdgeInsets.symmetric(horizontal: 15, vertical: 4),
+            height: _expanded
+                ? min(widget.order.products.length * 20.0 + 10, 100)
+                : 0,
+            // height: 500,
+            child: FadeTransition(
+              opacity: _fadeAnimation,
               child: ListView(
                 children: widget.order.products
                     .map(
@@ -76,7 +101,8 @@ class _OrderItemState extends State<OrderItemWidget> {
                     )
                     .toList(),
               ),
-            )
+            ),
+          )
         ],
       ),
     );
