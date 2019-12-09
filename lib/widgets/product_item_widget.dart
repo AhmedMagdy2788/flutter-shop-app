@@ -104,9 +104,14 @@ class ProductItemWidget extends StatelessWidget {
                 borderRadius: BorderRadius.all(
                   Radius.circular(constrains.maxWidth * 0.1),
                 ),
-                child: Image.network(
-                  _product.imageUrl,
-                  fit: BoxFit.cover,
+                child: Hero(
+                  tag: _product.id,
+                  child: FadeInImage(
+                    placeholder:
+                        AssetImage('assets/images/product-placeholder.png'),
+                    fit: BoxFit.cover,
+                    image: NetworkImage(_product.imageUrl),
+                  ),
                 ),
               ),
             ),

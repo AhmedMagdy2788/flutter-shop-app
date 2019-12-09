@@ -36,7 +36,6 @@ class _ProductsOverviewState extends State<ProductsOverview> {
       });
     });
     // .then(
-       
     //   // (onValue) {
     // //   productProvider = Provider.of<ProductsProvider>(context);
     // //   if (!productProvider.isDataFetched) {

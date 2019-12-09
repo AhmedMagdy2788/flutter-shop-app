@@ -39,13 +39,16 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                 SingleChildScrollView(
                   child: Column(
                     children: <Widget>[
-                      Image.network(
-                        _product.imageUrl,
-                        height: (isExpanded)
-                            ? constraints.maxHeight * 0.50
-                            : constraints.maxHeight,
-                        width: constraints.maxWidth,
-                        fit: (!isExpanded) ? BoxFit.cover : BoxFit.scaleDown,
+                      Hero(
+                        tag: _product.id,
+                        child: Image.network(
+                          _product.imageUrl,
+                          height: (isExpanded)
+                              ? constraints.maxHeight * 0.50
+                              : constraints.maxHeight,
+                          width: constraints.maxWidth,
+                          fit: (!isExpanded) ? BoxFit.cover : BoxFit.scaleDown,
+                        ),
                       ),
                       if (isExpanded)
                         Container(
