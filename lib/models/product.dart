@@ -14,12 +14,12 @@ class Product with ChangeNotifier {
   bool favourite;
 
   Product({
-    @required this.id,
-    @required this.title,
-    @required this.description,
-    @required this.price,
-    @required this.imageUrl,
-    @required this.ownerID,
+    required this.id,
+    required this.title,
+    required this.description,
+    required this.price,
+    required this.imageUrl,
+    required this.ownerID,
     this.favourite = false,
   });
 
@@ -37,7 +37,8 @@ class Product with ChangeNotifier {
     this.favourite = !this.favourite;
     notifyListeners();
     var response = await http.put(
-        'https://flutter-shop-app-31c34.firebaseio.com/userFavouritesProducts/$userID/${this.id}.json?auth=$token',
+        Uri.parse(
+            'https://flutter-shop-app-31c34.firebaseio.com/userFavouritesProducts/$userID/${this.id}.json?auth=$token'),
         body: convert.json.encode(
           this.favourite,
         ));

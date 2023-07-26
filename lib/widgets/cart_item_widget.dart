@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:provider/provider.dart';
 
 import '../providers/products_provider.dart';
@@ -33,7 +32,7 @@ class CartItemWidget extends StatelessWidget {
                   content: Text(
                       'Are you sure you want to delete the ${_product.title}?'),
                   actions: <Widget>[
-                    FlatButton(
+                    TextButton(
                       child: Text(
                         'Yes',
                         style: TextStyle(color: Colors.red, fontSize: 18),
@@ -42,7 +41,7 @@ class CartItemWidget extends StatelessWidget {
                         Navigator.of(context).pop(true);
                       },
                     ),
-                    FlatButton(
+                    TextButton(
                       child: Text(
                         'No',
                         style: TextStyle(color: Colors.green, fontSize: 18),
@@ -124,7 +123,7 @@ class CartItemWidget extends StatelessWidget {
                       Text(
                         _product.title,
                         style: TextStyle(
-                          color: Theme.of(context).accentColor,
+                          color: Theme.of(context).colorScheme.secondary,
                           fontSize: 22,
                           fontWeight: FontWeight.bold,
                         ),

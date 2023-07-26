@@ -6,8 +6,8 @@ import '../models/cart.dart';
 import '../models/order.dart';
 
 class Orders with ChangeNotifier {
-  final String token;
-  final String userID;
+  final String? token;
+  final String? userID;
   Orders(this.token, this.userID);
   List<OrderItem> _orders = [];
 
@@ -16,9 +16,9 @@ class Orders with ChangeNotifier {
   }
 
   Future<void> fatchUserOrders() async {
-    var response = await http
-        .get('https://flutter-shop-app-31c34.firebaseio.com/orders/$userID.json?auth=$token');
-        // print(convert.jsonDecode(response.body));
+    var response = await http.get(Uri.parse(
+        'https://flutter-shop-app-31c34.firebaseio.com/orders/$userID.json?auth=$token'));
+    // print(convert.jsonDecode(response.body));
     Map<String, dynamic> ordersData =
         convert.json.decode(response.body) as Map<String, dynamic>;
     List<OrderItem> orderItemsList = [];
@@ -27,16 +27,15 @@ class Orders with ChangeNotifier {
         id: orderItemID,
         amount: orderItemData['amount'],
         dateTime: DateTime.parse(orderItemData['dateTime']),
-        products: (orderItemData['products'] as List< dynamic>)
-          .map((listItem){
-            return CartItem(
-              id: listItem['id'],
-              title: listItem['title'],
-              productID: listItem['productID'],
-              productPrice: listItem['price'],
-              productAmount: listItem['amount'],
-            );
-          }).toList(),
+        products: (orderItemData['products'] as List<dynamic>).map((listItem) {
+          return CartItem(
+            id: listItem['id'],
+            title: listItem['title'],
+            productID: listItem['productID'],
+            productPrice: listItem['price'],
+            productAmount: listItem['amount'],
+          );
+        }).toList(),
       ));
     });
     _orders = orderItemsList;
@@ -46,13 +45,14 @@ class Orders with ChangeNotifier {
   Future<void> addOrder(List<CartItem> cartProducts, double total) async {
     var date = DateTime.now().toIso8601String();
     var response = await http.post(
-        'https://flutter-shop-app-31c34.firebaseio.com/orders/$userID.json?auth=$token',
+        Uri.parse(
+            'https://flutter-shop-app-31c34.firebaseio.com/orders/$userID.json?auth=$token'),
         body: convert.json.encode({
           'amount': total,
           'dateTime': date,
           'products': cartProducts.map((cartItem) {
             return {
-              'id':cartItem.id,
+              'id': cartItem.id,
               'title': cartItem.title,
               'productID': cartItem.productID,
               'amount': cartItem.productAmount,

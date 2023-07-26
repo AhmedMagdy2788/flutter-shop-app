@@ -11,12 +11,12 @@ class ProductDetailScreen extends StatefulWidget {
 
 class _ProductDetailScreenState extends State<ProductDetailScreen> {
   bool isExpanded = false;
-  Product _product;
+  late Product _product;
   @override
   Widget build(BuildContext context) {
     final routArg =
-        ModalRoute.of(context).settings.arguments as Map<String, Object>;
-    _product = routArg[Product.nameArg];
+        ModalRoute.of(context)!.settings.arguments as Map<String, Product>;
+    _product = routArg[Product.nameArg]!;
     return Scaffold(
       appBar: AppBar(
         title: Text(_product.title),
@@ -157,7 +157,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                           Text(
                             'Description: ',
                             style: TextStyle(
-                              color: Theme.of(context).accentColor,
+                              color: Theme.of(context).colorScheme.secondary,
                               fontSize: 20,
                               fontWeight: FontWeight.bold,
                             ),
@@ -198,7 +198,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
           Text(
             title,
             style: TextStyle(
-              color: Theme.of(context).accentColor,
+              color: Theme.of(context).colorScheme.secondary,
               fontSize: 20,
               fontWeight: FontWeight.bold,
             ),

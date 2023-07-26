@@ -12,38 +12,36 @@ class AuthProvider with ChangeNotifier {
       'https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyD9-CRXXtbQLtNdQgZmepd-u-QYQX1il1M';
   static final String signInURL =
       'https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyD9-CRXXtbQLtNdQgZmepd-u-QYQX1il1M';
-  String _token;
-  String _email;
-  String _password;
-  String _refreshToken;
-  DateTime _expireDate;
-  String _localID;
-  bool _isRegistered;
-  Timer authTimer;
+  String? _token;
+  String? _email;
+  String? _password;
+  String? _refreshToken;
+  DateTime? _expireDate;
+  String? _localID;
+  bool? _isRegistered;
+  Timer? authTimer;
 
   bool get isAuthenticated {
     if (token == null) return false;
     return true;
   }
 
-  String get token {
-    if (_token != null &&
-        _expireDate != null &&
-        _expireDate.isAfter(DateTime.now())) return _token;
+  String? get token {
+    if (_expireDate!.isAfter(DateTime.now())) return _token;
     return null;
   }
 
-  String get userID {
+  String? get userID {
     return isAuthenticated ? _localID : null;
   }
 
-  String get email{
+  String? get email {
     return _email;
   }
 
   Future<void> _authenticate(String email, String password, String url) async {
     try {
-      var response = await http.post(url,
+      var response = await http.post(Uri.parse(url),
           body: jsonEncode({
             'email': email,
             'password': password,
@@ -74,8 +72,8 @@ class AuthProvider with ChangeNotifier {
         final jUserData = jsonEncode({
           'token': _token,
           'userID': _localID,
-          'email' : _email,
-          'expireDate': _expireDate.toIso8601String()
+          'email': _email,
+          'expireDate': _expireDate!.toIso8601String()
         });
         final prefs = await SharedPreferences.getInstance();
         prefs.setString('UserData', jUserData);
@@ -98,10 +96,8 @@ class AuthProvider with ChangeNotifier {
     _localID = null;
     _expireDate = null;
     _refreshToken = null;
-    if (authTimer != null) {
-      authTimer.cancel();
-      authTimer = null;
-    }
+    authTimer!.cancel();
+    authTimer = null;
     final prefs = await SharedPreferences.getInstance();
     // prefs.remove('UserData');
     prefs.clear();
@@ -109,10 +105,8 @@ class AuthProvider with ChangeNotifier {
   }
 
   void _autoLogout() {
-    if (authTimer != null) {
-      authTimer.cancel();
-    }
-    final expiryTime = _expireDate.difference(DateTime.now()).inSeconds;
+    authTimer!.cancel();
+    final expiryTime = _expireDate!.difference(DateTime.now()).inSeconds;
     authTimer = Timer(Duration(seconds: expiryTime), logout);
   }
 
@@ -120,7 +114,7 @@ class AuthProvider with ChangeNotifier {
     final prefs = await SharedPreferences.getInstance();
     if (!prefs.containsKey('UserData')) return false;
     final userdata =
-        jsonDecode(prefs.getString('UserData')) as Map<String, dynamic>;
+        jsonDecode(prefs.getString('UserData')!) as Map<String, dynamic>;
     final storedExpireDate = DateTime.parse(userdata['expireDate']);
     if (storedExpireDate.isBefore(DateTime.now())) return false;
     _expireDate = storedExpireDate;

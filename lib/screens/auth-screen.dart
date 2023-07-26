@@ -63,7 +63,7 @@ class AuthScreen extends StatelessWidget {
                       child: Text(
                         'MyShop',
                         style: TextStyle(
-                          color: Theme.of(context).accentTextTheme.title.color,
+                          color: Theme.of(context).colorScheme.secondary,
                           fontSize: 50,
                           fontFamily: 'Anton',
                           fontWeight: FontWeight.normal,
@@ -87,7 +87,7 @@ class AuthScreen extends StatelessWidget {
 
 class AuthCard extends StatefulWidget {
   const AuthCard({
-    Key key,
+    Key? key,
   }) : super(key: key);
 
   @override
@@ -105,10 +105,10 @@ class _AuthCardState extends State<AuthCard>
   var _isLoading = false;
   bool _isInit = false;
   final _passwordController = TextEditingController();
-  Size deviceSize;
-  AnimationController _animaController;
-  Animation<Size> _sizeAnimation;
-  Animation<double> _fadeAnimation;
+  late Size deviceSize;
+  late AnimationController _animaController;
+  late Animation<Size> _sizeAnimation;
+  late Animation<double> _fadeAnimation;
 
   @override
   void didChangeDependencies() {
@@ -135,12 +135,12 @@ class _AuthCardState extends State<AuthCard>
   }
 
   Future<void> _submit() async {
-    if (!_formKey.currentState.validate()) {
+    if (!_formKey.currentState!.validate()) {
       // setState(() {});
       // Invalid!
       return;
     }
-    _formKey.currentState.save();
+    _formKey.currentState!.save();
     setState(() {
       _isLoading = true;
     });
@@ -148,11 +148,11 @@ class _AuthCardState extends State<AuthCard>
       if (_authMode == AuthMode.Login) {
         // Log user in
         await Provider.of<AuthProvider>(context, listen: false)
-            .signInUser(_authData['email'], _authData['password']);
+            .signInUser(_authData['email']!, _authData['password']!);
       } else {
         // Sign user up
         await Provider.of<AuthProvider>(context, listen: false)
-            .signUpUser(_authData['email'], _authData['password']);
+            .signUpUser(_authData['email']!, _authData['password']!);
       }
     } on HttpException catch (httpError) {
       print(httpError.toString());
@@ -175,7 +175,7 @@ class _AuthCardState extends State<AuthCard>
               title: Text('Server Error'),
               content: Text(errorMessage),
               actions: <Widget>[
-                FlatButton(
+                TextButton(
                   onPressed: () {
                     Navigator.of(context).pop();
                   },
@@ -239,12 +239,18 @@ class _AuthCardState extends State<AuthCard>
                   decoration: InputDecoration(labelText: 'E-Mail'),
                   keyboardType: TextInputType.emailAddress,
                   validator: (value) {
+                    if (value == null) {
+                      return "Please Enter Email";
+                    }
                     if (value.isEmpty || !value.contains('@')) {
                       return 'Invalid email!';
                     }
                     return null;
                   },
                   onSaved: (value) {
+                    if (value == null) {
+                      return;
+                    }
                     _authData['email'] = value;
                   },
                 ),
@@ -253,12 +259,18 @@ class _AuthCardState extends State<AuthCard>
                   obscureText: true,
                   controller: _passwordController,
                   validator: (value) {
+                    if (value == null) {
+                      return "Please Enter Email";
+                    }
                     if (value.isEmpty || value.length < 5) {
                       return 'Password is too short!';
                     }
                     return null;
                   },
                   onSaved: (value) {
+                    if (value == null) {
+                      return;
+                    }
                     _authData['password'] = value;
                   },
                 ),
@@ -290,25 +302,32 @@ class _AuthCardState extends State<AuthCard>
                 if (_isLoading)
                   CircularProgressIndicator()
                 else
-                  RaisedButton(
+                  ElevatedButton(
                     child:
                         Text(_authMode == AuthMode.Login ? 'LOGIN' : 'SIGN UP'),
                     onPressed: _submit,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(30),
+                    style: ElevatedButton.styleFrom(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(30),
+                      ),
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 30.0, vertical: 8.0),
+                      backgroundColor: Theme.of(context).primaryColor,
+                      foregroundColor:
+                          Theme.of(context).primaryTextTheme.labelLarge!.color,
                     ),
-                    padding:
-                        EdgeInsets.symmetric(horizontal: 30.0, vertical: 8.0),
-                    color: Theme.of(context).primaryColor,
-                    textColor: Theme.of(context).primaryTextTheme.button.color,
                   ),
-                FlatButton(
+                TextButton(
                   child: Text(
-                      '${_authMode == AuthMode.Login ? 'SIGNUP' : 'LOGIN'} INSTEAD'),
+                    '${_authMode == AuthMode.Login ? 'SIGNUP' : 'LOGIN'} INSTEAD',
+                  ),
                   onPressed: _switchAuthMode,
-                  padding: EdgeInsets.symmetric(horizontal: 30.0, vertical: 4),
-                  materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                  textColor: Theme.of(context).primaryColor,
+                  style: TextButton.styleFrom(
+                    padding:
+                        EdgeInsets.symmetric(horizontal: 30.0, vertical: 4),
+                    tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                    foregroundColor: Theme.of(context).primaryColor,
+                  ),
                 ),
               ],
             ),

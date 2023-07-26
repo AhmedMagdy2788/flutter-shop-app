@@ -4,10 +4,10 @@ import 'package:provider/provider.dart';
 import '../models/cart.dart';
 import '../screens/cart_screen.dart';
 import '../widgets/app_drawer.dart';
-import '../widgets/badge.dart';
 import '../models/product.dart';
 import '../providers/products_provider.dart';
 import '../widgets/product_item_widget.dart';
+import '../widgets/badge.dart' as MyBadge;
 
 enum MenuSelectedValues {
   Favourites,
@@ -23,7 +23,7 @@ class ProductsOverview extends StatefulWidget {
 class _ProductsOverviewState extends State<ProductsOverview> {
   bool isFavouritesOnly = false;
   bool isLoading = true;
-  ProductsProvider productProvider;
+  late ProductsProvider productProvider;
 
   @override
   void initState() {
@@ -79,10 +79,10 @@ class _ProductsOverviewState extends State<ProductsOverview> {
         title: Text('Products Overview'),
         actions: <Widget>[
           Consumer<Cart>(
-            builder: (_ctx, cart, _child) => Badge(
-              child: _child,
+            builder: (_ctx, cart, _child) => MyBadge.Badge(
+              child: _child!,
               value: cart.itemsCount.toString(),
-              color: Theme.of(context).accentColor,
+              color: Theme.of(context).colorScheme.secondary,
             ),
             child: IconButton(
               icon: Icon(Icons.shopping_cart),

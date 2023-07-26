@@ -8,7 +8,7 @@ import '../providers/products_provider.dart';
 class EditUserProduct extends StatefulWidget {
   static String namedRoute = '/EditUserProductsScreen';
   // final String userID;
-  EditUserProduct({Key key}) : super(key: key);
+  EditUserProduct({Key? key}) : super(key: key);
 
   @override
   _EditUserProductState createState() => _EditUserProductState();
@@ -20,8 +20,8 @@ class _EditUserProductState extends State<EditUserProduct> {
   FocusNode _imageUrlFocusNode = FocusNode();
   TextEditingController _imageUrlController = TextEditingController();
   GlobalKey<FormState> _productFormKey = GlobalKey<FormState>();
-  String _userID;
-  String _productID;
+  late String _userID;
+  late String _productID;
   String _productTitle = '';
   double _productPrice = 0.0;
   String _productDescription = '';
@@ -39,12 +39,13 @@ class _EditUserProductState extends State<EditUserProduct> {
   @override
   void didChangeDependencies() {
     if (!_isInit) {
-      _userID = Provider.of<AuthProvider>(context, listen: false).userID;
-      _productID = ModalRoute.of(context).settings.arguments as String;
+      _userID = Provider.of<AuthProvider>(context, listen: false).userID!;
+      _productID = ModalRoute.of(context)!.settings.arguments as String;
       if (_productID != 'new') {
         _isNew = false;
-        Product product =
-            Provider.of<ProductsProvider>(context).userProduct.firstWhere((prod) {
+        Product product = Provider.of<ProductsProvider>(context)
+            .userProduct
+            .firstWhere((prod) {
           if (prod.id == _productID) return true;
           return false;
         });
@@ -74,13 +75,13 @@ class _EditUserProductState extends State<EditUserProduct> {
   }
 
   void _saveProductForm(BuildContext context) {
-    bool isValidForm = _productFormKey.currentState.validate();
+    bool isValidForm = _productFormKey.currentState!.validate();
     if (!isValidForm) return;
-    _productFormKey.currentState.save();
+    _productFormKey.currentState!.save();
     setState(() {
       _isLoading = true;
     });
-    if (_isNew){
+    if (_isNew) {
       Provider.of<ProductsProvider>(context)
           .addProduct(Product(
         id: _productID,
@@ -99,7 +100,7 @@ class _EditUserProductState extends State<EditUserProduct> {
                 content:
                     Text('Check Internet conection or contect your server'),
                 actions: <Widget>[
-                  FlatButton(
+                  TextButton(
                     child: Text('OK'),
                     onPressed: () {
                       Navigator.of(context).pop();
@@ -114,7 +115,7 @@ class _EditUserProductState extends State<EditUserProduct> {
         });
         Navigator.of(context).pop();
       });
-    }else {
+    } else {
       Provider.of<ProductsProvider>(context).editProduct(
           _productID,
           Product(
@@ -171,13 +172,14 @@ class _EditUserProductState extends State<EditUserProduct> {
                         FocusScope.of(context).requestFocus(_priceFocusNode);
                       },
                       validator: (value) {
+                        if (value == null) return 'please Enter a title';
                         if (value.isEmpty) {
                           return 'Please Enter title';
                         }
                         return null;
                       },
                       onSaved: (value) {
-                        _productTitle = value;
+                        _productTitle = value!;
                       },
                     ),
                     TextFormField(
@@ -191,10 +193,10 @@ class _EditUserProductState extends State<EditUserProduct> {
                             .requestFocus(_descriptionFocusNode);
                       },
                       onSaved: (value) {
-                        _productPrice = double.parse(value);
+                        _productPrice = double.parse(value!);
                       },
                       validator: (value) {
-                        if (value.isEmpty) {
+                        if (value == null || value.isEmpty) {
                           return 'Please Enter price';
                         }
                         if (double.tryParse(value) == null) {
@@ -214,7 +216,7 @@ class _EditUserProductState extends State<EditUserProduct> {
                       focusNode: _descriptionFocusNode,
                       textInputAction: TextInputAction.newline,
                       validator: (value) {
-                        if (value.isEmpty) {
+                        if (value == null || value.isEmpty) {
                           return 'Please Enter Description for the product';
                         }
                         if (value.length < 10) {
@@ -223,7 +225,7 @@ class _EditUserProductState extends State<EditUserProduct> {
                         return null;
                       },
                       onSaved: (value) {
-                        _productDescription = value;
+                        _productDescription = value!;
                       },
                     ),
                     Row(
@@ -255,13 +257,13 @@ class _EditUserProductState extends State<EditUserProduct> {
                               _saveProductForm(context);
                             },
                             validator: (value) {
-                              if (value.isEmpty) {
+                              if (value == null || value.isEmpty) {
                                 return 'Please Enter image url';
                               }
                               return null;
                             },
                             onSaved: (value) {
-                              _productURL = value;
+                              _productURL = value!;
                             },
                           ),
                         ),

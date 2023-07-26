@@ -1,5 +1,3 @@
-import 'package:flutter/foundation.dart';
-
 import './cart.dart';
 
 class OrderItem {
@@ -9,10 +7,9 @@ class OrderItem {
   final List<CartItem> products;
 
   OrderItem({
-    @required this.id,
-    @required this.amount,
-    @required this.dateTime,
-    @required this.products,
+    required this.id,
+    required this.amount,
+    required this.dateTime,
+    required this.products,
   });
 }
-

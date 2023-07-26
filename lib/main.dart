@@ -27,14 +27,17 @@ class MyApp extends StatelessWidget {
           value: AuthProvider(),
         ),
         ChangeNotifierProxyProvider<AuthProvider, ProductsProvider>(
-          builder: (ctx, authProvider, previousProduct) =>
+          create: (ctx) => ProductsProvider(null, null, false),
+          update: (ctx, authProvider, previousProduct) =>
               ProductsProvider(authProvider.token, authProvider.userID, false),
         ),
         ChangeNotifierProxyProvider<AuthProvider, Cart>(
-          builder: (ctx, auth, previousCart) => Cart(auth.token),
+          create: (ctx) => Cart(null),
+          update: (ctx, auth, previousCart) => Cart(auth.token),
         ),
         ChangeNotifierProxyProvider<AuthProvider, Orders>(
-          builder: (ctx, auth, previousOrders) =>
+          create: (ctx) => Orders(null, null),
+          update: (ctx, auth, previousOrders) =>
               Orders(auth.token, auth.userID),
         )
       ],
@@ -44,9 +47,9 @@ class MyApp extends StatelessWidget {
             debugShowCheckedModeBanner: false,
             title: 'Shop App',
             theme: ThemeData(
-              primarySwatch: Colors.purple,
-              accentColor: Colors.deepOrange,
               fontFamily: 'Lato',
+              colorScheme: ColorScheme.fromSwatch(primarySwatch: Colors.purple)
+                  .copyWith(secondary: Colors.deepOrange),
             ),
             home: authProvider.isAuthenticated
                 ? ProductsOverview()

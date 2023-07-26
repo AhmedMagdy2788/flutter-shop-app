@@ -13,7 +13,7 @@ class UserProductItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var contextScaffold = Scaffold.of(context);
+    var contextScaffold = ScaffoldMessenger.of(context);
     return ListTile(
       title: Text(title),
       leading: CircleAvatar(
@@ -47,7 +47,7 @@ class UserProductItem extends StatelessWidget {
                   ));
                 }
               },
-              color: Theme.of(context).errorColor,
+              color: Theme.of(context).colorScheme.error,
             ),
           ],
         ),

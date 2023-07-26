@@ -16,7 +16,7 @@ class UserProductsScreen extends StatefulWidget {
 class _UserProductsScreenState extends State<UserProductsScreen> {
   bool isLoading = true;
   bool isInit = false;
-  ProductsProvider productsData;
+  late ProductsProvider productsData;
   @override
   void initState() {
     Future.delayed(Duration.zero, () async {
@@ -55,7 +55,8 @@ class _UserProductsScreenState extends State<UserProductsScreen> {
                 setState(() {
                   isLoading = true;
                 });
-                await Provider.of<ProductsProvider>(context).fetchUserCreatedProduct();
+                await Provider.of<ProductsProvider>(context)
+                    .fetchUserCreatedProduct();
                 setState(() {
                   isLoading = false;
                 });

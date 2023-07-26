@@ -5,7 +5,7 @@ import 'package:shop_app/providers/auth_provider.dart';
 import '../models/cart.dart';
 import '../models/product.dart';
 import '../screens/product_details.dart';
-import 'badge.dart';
+import '../widgets/badge.dart' as MyBadge;
 
 class ProductItemWidget extends StatelessWidget {
   @override
@@ -49,10 +49,11 @@ class ProductItemWidget extends StatelessWidget {
                           (product.favourite)
                               ? Icons.favorite
                               : Icons.favorite_border,
-                          color: Theme.of(context).accentColor,
+                          color: Theme.of(context).colorScheme.secondary,
                         ),
                         onPressed: () {
-                          product.toggleFavorite(_auther.userID, _auther.token);
+                          product.toggleFavorite(
+                              _auther.userID!, _auther.token!);
                         },
                         color: Colors.white,
                       ),
@@ -67,10 +68,10 @@ class ProductItemWidget extends StatelessWidget {
                       ),
                     ),
                     Consumer<Cart>(
-                      builder: (_ctx, _cart, _child) => Badge(
-                        child: _child,
+                      builder: (_ctx, _cart, _child) => MyBadge.Badge(
+                        child: _child!,
                         value: _cart.getProductAmount(_product.id).toString(),
-                        color: Theme.of(context).accentColor,
+                        color: Theme.of(context).colorScheme.secondary,
                       ),
                       child: IconButton(
                         icon: Icon(
@@ -80,8 +81,8 @@ class ProductItemWidget extends StatelessWidget {
                         onPressed: () {
                           _cart.addProductToCart(
                               _product.id, 1, _product.price);
-                          Scaffold.of(context).hideCurrentSnackBar();
-                          Scaffold.of(context).showSnackBar(
+                          ScaffoldMessenger.of(context).hideCurrentSnackBar();
+                          ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
                               content:
                                   Text('${_product.title} added to the cart'),

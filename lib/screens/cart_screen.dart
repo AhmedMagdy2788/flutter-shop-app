@@ -8,7 +8,7 @@ import '../widgets/cart_item_widget.dart';
 
 class CartScreen extends StatefulWidget {
   static String nameRout = '/cartScreen';
-  CartScreen({Key key}) : super(key: key);
+  CartScreen({Key? key}) : super(key: key);
 
   @override
   _CartScreenState createState() => _CartScreenState();
@@ -84,8 +84,8 @@ class _CartScreenState extends State<CartScreen> {
             decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(constraints.maxHeight / 2),
-                border:
-                    Border.all(color: Theme.of(context).accentColor, width: 2)),
+                border: Border.all(
+                    color: Theme.of(context).colorScheme.secondary, width: 2)),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
@@ -102,7 +102,7 @@ class _CartScreenState extends State<CartScreen> {
                     ),
                   ),
                 ),
-                FlatButton(
+                TextButton(
                   child: Text(
                     'ORDER NOW',
                     style: TextStyle(
@@ -110,7 +110,8 @@ class _CartScreenState extends State<CartScreen> {
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  textColor: Theme.of(context).accentColor,
+                  style: TextButton.styleFrom(
+                      foregroundColor: Theme.of(context).colorScheme.secondary),
                   onPressed: (isLoading || cart.cartItems.length <= 0)
                       ? null
                       : () async {

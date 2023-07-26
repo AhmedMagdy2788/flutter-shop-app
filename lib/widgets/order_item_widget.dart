@@ -20,8 +20,8 @@ class _OrderItemState extends State<OrderItemWidget>
     with SingleTickerProviderStateMixin {
   var _expanded = false;
   bool _isInit = false;
-  AnimationController _animeController;
-  Animation<double> _fadeAnimation;
+  late AnimationController _animeController;
+  late Animation<double> _fadeAnimation;
 
   @override
   void didChangeDependencies() {
@@ -53,8 +53,10 @@ class _OrderItemState extends State<OrderItemWidget>
               onPressed: () {
                 setState(() {
                   _expanded = !_expanded;
-                  if(_expanded) _animeController.forward();
-                  else _animeController.reverse();
+                  if (_expanded)
+                    _animeController.forward();
+                  else
+                    _animeController.reverse();
                 });
               },
             ),

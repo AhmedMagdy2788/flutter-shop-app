@@ -7,8 +7,8 @@ import '../models/http_exception.dart';
 import '../models/product.dart';
 
 class ProductsProvider with ChangeNotifier {
-  final String token;
-  final String userID;
+  final String? token;
+  final String? userID;
   bool isDataFetched;
   ProductsProvider(this.token, this.userID, this.isDataFetched);
   List<Product> _items = [
@@ -55,7 +55,6 @@ class ProductsProvider with ChangeNotifier {
     return [..._userProduct];
   }
 
-
   List<Product> get favouritesItems {
     return _items.where((productItem) {
       return productItem.favourite;
@@ -64,11 +63,11 @@ class ProductsProvider with ChangeNotifier {
 
   Future<void> fetchUserCreatedProduct() async {
     print('fetching user created product');
-    var response = await http.get(
-        'https://flutter-shop-app-31c34.firebaseio.com/products.json?auth=$token&orderBy="ownerID"&equalTo="$userID"');
+    var response = await http.get(Uri.parse(
+        'https://flutter-shop-app-31c34.firebaseio.com/products.json?auth=$token&orderBy="ownerID"&equalTo="$userID"'));
     var responseData =
         convert.jsonDecode(response.body) as Map<String, dynamic>;
-        
+
     List<Product> recvedProductList = [];
     responseData.forEach((prodID, prodData) {
       recvedProductList.add(Product(
@@ -90,16 +89,16 @@ class ProductsProvider with ChangeNotifier {
     // try {
     String filteredExtention =
         filtered ? '&orderBy="ownerID"&equelTo="$userID"' : '';
-    var response = await http.get(
-        'https://flutter-shop-app-31c34.firebaseio.com/products.json?auth=$token$filteredExtention');
+    var response = await http.get(Uri.parse(
+        'https://flutter-shop-app-31c34.firebaseio.com/products.json?auth=$token$filteredExtention'));
     // try {
     var fitchedProductsData =
         convert.json.decode(response.body) as Map<String, dynamic>;
     print('Data Fitched Succefully');
     // try {
     print(userID);
-    response = await http.get(
-        'https://flutter-shop-app-31c34.firebaseio.com/userFavouritesProducts/$userID.json?auth=$token');
+    response = await http.get(Uri.parse(
+        'https://flutter-shop-app-31c34.firebaseio.com/userFavouritesProducts/$userID.json?auth=$token'));
     // try {
     var favouriteProductsData = convert.json.decode(response.body);
     print('Data Fitched Succefully');
@@ -135,7 +134,8 @@ class ProductsProvider with ChangeNotifier {
   Future<void> addProduct(Product product) {
     return http
         .post(
-            'https://flutter-shop-app-31c34.firebaseio.com/products.json?auth=$token',
+            Uri.parse(
+                'https://flutter-shop-app-31c34.firebaseio.com/products.json?auth=$token'),
             body: product.toJSON())
         .then((responce) {
       _items.add(Product(
@@ -162,7 +162,8 @@ class ProductsProvider with ChangeNotifier {
         return false;
       }));
       http.patch(
-          'https://flutter-shop-app-31c34.firebaseio.com/products/$prodID.json?auth=$token',
+          Uri.parse(
+              'https://flutter-shop-app-31c34.firebaseio.com/products/$prodID.json?auth=$token'),
           body: product.toJSON());
       _items[index] = Product(
         id: prodID,
@@ -185,11 +186,11 @@ class ProductsProvider with ChangeNotifier {
       }
       return false;
     });
-    var existingProduct = _items[existingProductIndex];
+    Product? existingProduct = _items[existingProductIndex];
     _items.removeAt(existingProductIndex);
     notifyListeners();
-    var responce = await http.delete(
-        'https://flutter-shop-app-31c34.firebaseio.com/products/$prodID.json?auth=$token');
+    var responce = await http.delete(Uri.parse(
+        'https://flutter-shop-app-31c34.firebaseio.com/products/$prodID.json?auth=$token'));
     if (responce.statusCode >= 400) {
       _items.insert(existingProductIndex, existingProduct);
       notifyListeners();

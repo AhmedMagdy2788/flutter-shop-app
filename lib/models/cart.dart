@@ -2,22 +2,22 @@ import 'package:flutter/foundation.dart';
 
 class CartItem {
   final String id;
-  final String title;
+  final String? title;
   final String productID;
   int productAmount;
   double productPrice;
 
   CartItem({
-    @required this.id,
+    required this.id,
     this.title,
-    @required this.productID,
-    @required this.productPrice,
+    required this.productID,
+    required this.productPrice,
     this.productAmount = 0,
   });
 }
 
 class Cart with ChangeNotifier {
-  final String token;
+  final String? token;
   Cart(this.token);
   List<CartItem> _cartItems = [];
 
@@ -85,13 +85,13 @@ class Cart with ChangeNotifier {
     return true;
   }
 
-  int getProductAmount(String prodID){
-    var cartItem = _cartItems.firstWhere((cartItem) {
+  int getProductAmount(String prodID) {
+    CartItem? cartItem = _cartItems.firstWhere((cartItem) {
       if (cartItem.productID == prodID)
         return true;
       else
         return false;
-    }, orElse: () {return null;});
+    });
     if (cartItem == null) return 0;
     return cartItem.productAmount;
   }
